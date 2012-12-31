@@ -43,8 +43,6 @@ void loop()
       loops = 0;
       curTap = 0;
       nTaps = 0;
-      for (int i=0; i<BUFSIZE; i++)
-        recording[i] = 0;
       // turn on light as indicator
       hb.set_light(CURRENT_LEVEL, 200, NOW);
       // and start the recording
@@ -64,8 +62,9 @@ void loop()
       }
     }
     else if (hb.button_held() && nTaps==BUFSIZE-1) 
-    { // if we're out of buffer space, stop responding, but still keep track of the release time
-      recording[nTaps] = loops;
+    { 
+      // We're out of buffer space so stop pulsing with taps.  
+      //  Once the button has been released, continue.
     }
     else
     {  // Time to transition to playback mode
