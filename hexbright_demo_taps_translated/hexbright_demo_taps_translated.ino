@@ -21,14 +21,13 @@ hexbright hb;
 
 // State
 byte mode;
-unsigned long btnTime, tapTime;
-unsigned long recording[BUFSIZE];
+unsigned int loops;
+unsigned int recording[BUFSIZE];
 int nTaps, curTap;
 
 void setup()
 {
   mode = MODE_OFF;
-  btnTime = 0;
   Serial.println("Powered up!");
   hb.init_hardware();
 }
@@ -40,14 +39,14 @@ void loop()
   {
   case MODE_OFF:
     if(hb.button_held()>200){
-      // re-initialize variables
-      btnTime = millis();
+      // (re-)initialize variables
+      loops = 0;
+      curTap = 0;
       nTaps = 0;
-      tapTime = 0;
       for (int i=0; i<BUFSIZE; i++)
         recording[i] = 0;
       // turn on light as indicator
-      hb.set_light(CURRENT_LEVEL, 300, NOW);
+      hb.set_light(CURRENT_LEVEL, 200, NOW);
       // and start the recording
       Serial.println("Recording!");
       mode = MODE_RECORD;
@@ -56,12 +55,12 @@ void loop()
   case MODE_RECORD:
     if (hb.button_held() && nTaps<BUFSIZE)
     {
-      if(hb.tapped() && millis()-tapTime>200)
+      if(hb.tapped() && loops>5)
       {
         Serial.println("Tap!");
-        tapTime = millis();
-        recording[nTaps++] = tapTime-btnTime;
-        hb.set_light(MAX_LEVEL, CURRENT_LEVEL, 150);
+        recording[nTaps++] = loops;
+        hb.set_light(MAX_LEVEL, 200, 150);
+        loops = 0;
       }
     }
     else
@@ -72,17 +71,16 @@ void loop()
         Serial.print(recording[i]);
         Serial.print(" ");
       }
-      recording[nTaps] = millis()-btnTime;  // End time
+      recording[nTaps] = loops;  // End time
       Serial.println(recording[nTaps]);
+      loops = 0;
       curTap = 0;
-      btnTime = millis();
       mode = MODE_PLAY;
     }
     break;
   case MODE_PLAY:    
     if (hb.button_released()) // make sure we don't switch modes until the button is released (or we're off)
     {
-      btnTime = 0;
       mode = MODE_OFF;
     } 
     else if (hb.button_held()) 
@@ -92,21 +90,22 @@ void loop()
     }
     else
     { // No button, keep playing.
-      if (millis()-btnTime > recording[curTap])
+      if (loops > recording[curTap])
       { // Time to flash out this tap!
         if (curTap < nTaps)
         {
-          hb.set_light(MAX_LEVEL, CURRENT_LEVEL, 150);
+          hb.set_light(MAX_LEVEL, 200, 150);
           curTap++;
         }
         else
         {
           curTap = 0;
-          btnTime = millis();
         }
+        loops = 0;
       }
     }    
     break;
   }
+  loops++;
 }
 
