@@ -81,15 +81,17 @@ void setup()
 */
   mode = MODE_OFF;
   btnTime = 0;
-//  Serial.println("Powered up!");
+  Serial.println("Powered up!");
   hb.init_hardware();
 }
 
 void loop()
 {
+  hb.update();
   switch (mode)
   {
   case MODE_OFF:
+  /*
     if (digitalRead(DPIN_RLED_SW))
     {  // Button is down..
       if (btnTime==0)
@@ -108,11 +110,24 @@ void loop()
         analogWrite(DPIN_DRV_EN, 32);
         mode = MODE_RECORD;
       }
-    }
+    }*/
+    if(hb.button_held()>200){
+      // re-initialize variables
+      btnTime = millis();
+      nTaps = 0;
+      tapTime = 0;
+      for (int i=0; i<BUFSIZE; i++)
+        recording[i] = 0;
+      // turn on light as indicator
+      hb.set_light(CURRENT_LEVEL, 300, NOW);
+      // and start the recording
+      Serial.println("Recording!");
+      mode = MODE_RECORD;
+    }    
     break;
   case MODE_RECORD:
-    if (digitalRead(DPIN_RLED_SW) && nTaps<BUFSIZE)
-    {
+    if (hb.button_held() && nTaps<BUFSIZE)
+    {/*
       // Poll the accelerometer
       Wire.beginTransmission(ACC_ADDRESS);
       Wire.write(ACC_REG_TILT);
@@ -127,6 +142,14 @@ void loop()
         analogWrite(DPIN_DRV_EN, 255);
         delay(100);
         analogWrite(DPIN_DRV_EN, 32);
+      }*/
+      
+      if(hb.tapped() && millis()-tapTime>200)
+      {
+        Serial.println("Tap!");
+        tapTime = millis();
+        recording[nTaps++] = tapTime-btnTime;
+        hb.set_light(MAX_LEVEL, CURRENT_LEVEL, 150);
       }
     }
     else
@@ -145,7 +168,7 @@ void loop()
     }
     break;
   case MODE_PLAY:    
-    if (digitalRead(DPIN_RLED_SW))
+/*    if (digitalRead(DPIN_RLED_SW))
     { // Buton pressed again.  Turn off.
       Serial.println("Off!");
       digitalWrite(DPIN_DRV_EN, LOW);
@@ -154,7 +177,7 @@ void loop()
       mode = MODE_OFF;
       while (digitalRead(DPIN_RLED_SW));
       delay(200);
-    }
+    } 
     else
     { // No button, keep playing.
       if (millis()-btnTime > recording[curTap])
@@ -164,6 +187,33 @@ void loop()
           analogWrite(DPIN_DRV_EN, 255);
           delay(100);
           analogWrite(DPIN_DRV_EN, 32);
+          curTap++;
+        }
+        else
+        {
+          curTap = 0;
+          btnTime = millis();
+        }
+      }
+    }    
+*/
+    if (hb.button_released()) // make sure we don't switch modes until the button is released (or we're off)
+    {
+      btnTime = 0;
+      mode = MODE_OFF;
+    } 
+    else if (hb.button_held()) 
+    {
+      Serial.println("Off!");
+      hb.shutdown();
+    }
+    else
+    { // No button, keep playing.
+      if (millis()-btnTime > recording[curTap])
+      { // Time to flash out this tap!
+        if (curTap < nTaps)
+        {
+          hb.set_light(MAX_LEVEL, CURRENT_LEVEL, 150);
           curTap++;
         }
         else
