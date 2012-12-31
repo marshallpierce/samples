@@ -13,7 +13,10 @@
 hexbright hb;
 
 // Settings
-#define BUFSIZE                 64
+// max buffer size is between 190 and 200, but you'd be very close to running out of ram.
+//  The top of loop has a function that will help you find how much ram you have available.
+//  keep in mind that you need a buffer.  See hexbright.h for more details.
+#define BUFSIZE                 128
 // Modes
 #define MODE_OFF                0
 #define MODE_RECORD             1
@@ -35,6 +38,8 @@ void setup()
 void loop()
 {
   hb.update();
+//  if(!hb.printing_number())
+//    hb.print_number(hb.freeRam());
   switch (mode)
   {
   case MODE_OFF:
