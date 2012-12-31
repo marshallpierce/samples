@@ -8,6 +8,9 @@
 */
 
 #include <Wire.h>
+#include <hexbright.h>
+
+hexbright hb;
 
 // Settings
 #define BUFSIZE                 64
@@ -38,6 +41,7 @@ int nTaps, curTap;
 
 void setup()
 {
+/*
   // We just powered on!  That means either we got plugged 
   // into USB, or the user is pressing the power button.
   pinMode(DPIN_PWR,      INPUT);
@@ -74,10 +78,11 @@ void setup()
   Wire.write(enable, sizeof(enable));
   Wire.endTransmission();
 
-
+*/
   mode = MODE_OFF;
   btnTime = 0;
-  Serial.println("Powered up!");
+//  Serial.println("Powered up!");
+  hb.init_hardware();
 }
 
 void loop()
