@@ -53,15 +53,19 @@ void loop()
     }    
     break;
   case MODE_RECORD:
-    if (hb.button_held() && nTaps<BUFSIZE)
+    if (hb.button_held() && nTaps<BUFSIZE-1)
     {
       if(hb.tapped() && loops>5)
       {
         Serial.println("Tap!");
-        recording[nTaps++] = loops;
+        recording[nTaps++] = loops; // how many loops passed before a tap?
+        loops = 0; // reset our counter
         hb.set_light(MAX_LEVEL, 200, 150);
-        loops = 0;
       }
+    }
+    else if (hb.button_held() && nTaps==BUFSIZE-1) 
+    { // if we're out of buffer space, stop responding, but still keep track of the release time
+      recording[nTaps] = loops;
     }
     else
     {  // Time to transition to playback mode
