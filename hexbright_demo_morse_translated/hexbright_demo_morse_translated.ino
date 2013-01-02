@@ -7,16 +7,13 @@
   just below.
 */
 
+#include <hexbright.h>
+#include <Wire.h>
+
+hexbright hb;
+
 char message[] = "SOS HEXBRIGHT SOS";
 int millisPerBeat = 75;
-
-
-// Pin assignments
-#define DPIN_RLED_SW            2
-#define DPIN_GLED               5
-#define DPIN_PWR                8
-#define DPIN_DRV_MODE           9
-#define DPIN_DRV_EN             10
 
 // High byte = length
 // Low byte  = morse code, LSB first, 0=dot 1=dash
@@ -61,77 +58,95 @@ word morse[] = {
 
 void setup()
 {
-  pinMode(DPIN_PWR,      INPUT);
-  digitalWrite(DPIN_PWR, LOW);
-
-  // Initialize GPIO
-  pinMode(DPIN_RLED_SW,  INPUT);
-  pinMode(DPIN_GLED,     OUTPUT);
-  pinMode(DPIN_DRV_MODE, OUTPUT);
-  pinMode(DPIN_DRV_EN,   OUTPUT);
-  digitalWrite(DPIN_DRV_MODE, LOW);
-  digitalWrite(DPIN_DRV_EN,   LOW);
+  hb.init_hardware();
 }
+
+#define OFF_MODE 0
+#define MORSE_MODE 1
+int mode = 0;
 
 void loop()
 {
-  // Expect a button press to start
-  if (!digitalRead(DPIN_RLED_SW)) return;
-
-  // Ensure the regulator stays enabled
-  pinMode(DPIN_PWR,      OUTPUT);
-  digitalWrite(DPIN_PWR, HIGH);
-  
-  for (int i = 0; i < sizeof(message); i++)
+  hb.update();
+  if(hb.button_held()>500)
   {
-    char ch = message[i];
-    if (ch == ' ')
-    {
-      // 7 beats between words, but 3 have already passed
-      // at the end of the last character
-      delay(millisPerBeat * 4);
-    }
-    else
-    {
-      // Remap ASCII to the morse table
-      if      (ch >= 'A' && ch <= 'Z') ch -= 'A';
-      else if (ch >= 'a' && ch <= 'z') ch -= 'a';
-      else if (ch >= '0' && ch <= '9') ch -= '0' - 26;
-      else continue;
+    mode = OFF_MODE;
+  }
+  else if (hb.button_held()<500 && hb.button_released())
+  {
+    mode = MORSE_MODE; 
+  }
+  
+  if(mode == OFF_MODE)
+  {
+    hb.shutdown(); 
+  }
+  if(mode == MORSE_MODE)
+  {
+    if(!hb.light_change_remaining())
+    { // we're not currently doing anything, start the next step
+      static int current_character = 0;
+      static char symbols_remaining = 0;
+      static byte pattern = 0;
       
-      // Extract the symbols and length
-      byte curChar  = morse[ch] & 0x00FF;
-      byte nSymbols = morse[ch] >> 8;
-      
-      // Play each symbol
-      for (int j = 0; j < nSymbols; j++)
-      {
-        digitalWrite(DPIN_DRV_EN, HIGH);
-        if (curChar & 1)  // Dash - 3 beats
-          delay(millisPerBeat * 3);
-        else              // Dot - 1 beat
-          delay(millisPerBeat);
-        digitalWrite(DPIN_DRV_EN, LOW);
-        // One beat between symbols
-        delay(millisPerBeat);
-        curChar >>= 1;
+      if(current_character>=sizeof(message))
+      { // we've hit the end of message, turn off.
+        mode = OFF_MODE;
+        // reset the current_character, so if we're connected to USB, next printing will still work.
+        current_character = 0;
+        
+        // Flash three times the easy way (but a different color).
+        //  Printing 30 would flash green 3 times, with a long red.
+        hb.print_number(3);
+        // return now to skip the following code.
+        return;
       }
-      // 3 beats between characters, but one already
-      // passed after the last symbol.
-      delay(millisPerBeat * 2);
-    } 
+            
+      if(symbols_remaining <= 0) // we're done printing our last character, get the next!
+      {
+        char ch = message[current_character];
+        // Remap ASCII to the morse table
+        if      (ch >= 'A' && ch <= 'Z') ch -= 'A';
+        else if (ch >= 'a' && ch <= 'z') ch -= 'a';
+        else if (ch >= '0' && ch <= '9') ch -= '0' - 26;
+        else ch = -1; // character not in table
+      
+        if(ch>=0)
+        {
+          // Extract the symbols and length
+          pattern = morse[ch] & 0x00FF;
+          symbols_remaining = morse[ch] >> 8;
+          // we count space (between dots/dashes) as a symbol to be printed;
+          symbols_remaining *= 2;
+        }
+        current_character++;
+      }
+      
+      if (symbols_remaining<=0)
+      { // character was unrecognized, treat it as a space
+        // 7 beats between words, but 3 have already passed
+        // at the end of the last character
+        hb.set_light(0,0, millisPerBeat * 4);
+      }
+      else if (symbols_remaining==1) 
+      { // last symbol in character, long pause
+        hb.set_light(0, 0, millisPerBeat * 3);
+      }
+      else if(symbols_remaining%2==1) 
+      { // even symbol, print space!
+        hb.set_light(0,0, millisPerBeat);
+      }
+      else if (pattern & 1)
+      { // dash, 3 beats
+        hb.set_light(MAX_LEVEL, MAX_LEVEL, millisPerBeat * 3);
+        pattern >>= 1;
+      }
+      else 
+      { // dot, by elimination
+        hb.set_light(MAX_LEVEL, MAX_LEVEL, millisPerBeat);
+        pattern >>= 1;
+      }
+      symbols_remaining--;
+    }
   }
-  
-  // Flash the green LED to indicate we're done
-  for (int k = 0; k < 3; k++)
-  {
-    digitalWrite(DPIN_GLED, HIGH);
-    delay(50);
-    digitalWrite(DPIN_GLED, LOW);
-    delay(50);    
-  }
-  // Disable the regulator to power off
-  // This won't work on USB power.
-  digitalWrite(DPIN_PWR, LOW);
 }
-
