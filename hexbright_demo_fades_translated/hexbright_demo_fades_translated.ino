@@ -18,6 +18,7 @@ hexbright hb;
 #define MODE_ON                 2
 
 byte mode;
+char brightness_direction = 0;
 
 void setup()
 {
@@ -40,14 +41,22 @@ void loop()
     if(hb.button_held())
     {
       if(!hb.light_change_remaining())
-        if(hb.get_light_level()<500) // the light is low, go up from here
+        if(brightness_direction<0)
+        { // the light is low, go up from here
           hb.set_light(CURRENT_LEVEL, 1000, 1000);  // go from low to high over 2 seconds
+          brightness_direction = 1;
+        }
         else
+        {
           hb.set_light(CURRENT_LEVEL, 1, 1000); // go from high to low over 2 seconds
+          brightness_direction = -1;
+        }
     }
     else // released!
-    { // use the current light level for our brightness
-      hb.set_light(CURRENT_LEVEL, CURRENT_LEVEL, NOW);
+    { // we backtrack a little to help compensate for human reaction time
+      int brightness = hb.get_light_level()+(50*brightness_direction);
+      brightness = brightness<1 ? 1 : brightness; // if our adjust took us to 0, undo.
+      hb.set_light(CURRENT_LEVEL, brightness, 50);
       mode = MODE_ON;
     }
     break;
@@ -59,7 +68,9 @@ void loop()
     }
     else if (hb.button_held()>200) 
     {
-      mode = MODE_FADE; 
+      mode = MODE_FADE;
+      // so we continue going the same way as before
+      brightness_direction = -brightness_direction;
     }
     break;    
   }
