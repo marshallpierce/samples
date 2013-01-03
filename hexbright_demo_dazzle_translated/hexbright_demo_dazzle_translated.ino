@@ -22,12 +22,7 @@ void loop()
   
   if (hb.button_held())
   {
-    if (millis() - lastTime > 10)
-    {
-      if(random(3)<1)
-        hb.set_light(1000, 0, 10);
-      lastTime = millis();
-    }
+    hb.set_light(0, (random(4)<1)*1000, NOW);
   }
   else
     hb.shutdown();
