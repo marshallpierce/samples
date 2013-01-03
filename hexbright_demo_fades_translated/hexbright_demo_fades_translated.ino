@@ -43,12 +43,12 @@ void loop()
       if(!hb.light_change_remaining())
         if(brightness_direction<0)
         { // the light is low, go up from here
-          hb.set_light(CURRENT_LEVEL, 1000, 1000);  // go from low to high over 2 seconds
+          hb.set_light(CURRENT_LEVEL, 1000, 1000);  // go from low to high over 1 second
           brightness_direction = 1;
         }
         else
         {
-          hb.set_light(CURRENT_LEVEL, 1, 1000); // go from high to low over 2 seconds
+          hb.set_light(CURRENT_LEVEL, 1, 1000); // go from high to low over 1 second
           brightness_direction = -1;
         }
     }
