@@ -182,36 +182,35 @@ void loop()
 */
   // mode setting is still handled in the main program.  For now, we'll 
   //  just translate the button presses.
-  int button_time_held = hb.button_held();
-  boolean button_released = hb.button_released();
+  boolean button_just_released = hb.button_just_released();
   
   switch (mode)
   {
   case MODE_OFF:
-    if (button_time_held>500)
+    if (hb.button_pressed_time()>500)
       newMode = MODE_BLINKING_PREVIEW;
-    else if (button_released)
+    else if (button_just_released)
       newMode = MODE_LOW;
     break;
   case MODE_LOW:
-    if (button_released)
+    if (button_just_released)
       newMode = MODE_MED;
     break;
   case MODE_MED:
-    if (button_released)
+    if (button_just_released)
       newMode = MODE_HIGH;
     break;
   case MODE_HIGH:
-    if (button_released)
+    if (button_just_released)
       newMode = MODE_OFF;
     break;
   case MODE_BLINKING_PREVIEW:
     // This mode exists just to ignore this button release.
-    if (button_released)
+    if (button_just_released)
       newMode = MODE_BLINKING;
     break;
   case MODE_BLINKING:
-    if (button_released)
+    if (button_just_released)
       newMode = MODE_OFF;
     break;
   }

@@ -68,11 +68,11 @@ int mode = 0;
 void loop()
 {
   hb.update();
-  if(hb.button_held()>500)
+  if(hb.button_pressed_time()>500)
   {
     mode = OFF_MODE;
   }
-  else if (hb.button_held()<500 && hb.button_released())
+  else if (hb.button_pressed_time()<500 && hb.button_just_released())
   {
     mode = MORSE_MODE; 
   }

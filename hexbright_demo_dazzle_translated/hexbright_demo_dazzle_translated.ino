@@ -20,7 +20,7 @@ void loop()
   static unsigned long lastTime;
   hb.update();
   
-  if (hb.button_held())
+  if (hb.button_pressed())
   {
     hb.set_light(0, (random(4)<1)*1000, NOW);
   }

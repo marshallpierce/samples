@@ -17,7 +17,7 @@ void setup()
 void loop()
 {
   hb.update();
-  if (hb.button_held()) // technically, returns a length of time, but any non-zero length of time is true
+  if (hb.button_pressed())
     hb.set_light(MAX_LEVEL, MAX_LEVEL, NOW);
   else
   // We could set_light(CURRENT_LEVEL, 0, NOW), but this will

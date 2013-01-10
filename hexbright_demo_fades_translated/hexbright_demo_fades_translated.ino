@@ -33,12 +33,12 @@ void loop()
   switch (mode)
   {
   case MODE_OFF:
-    if(hb.button_held()) {
+    if(hb.button_pressed()) {
       mode = MODE_FADE;
     }
     break;
   case MODE_FADE:
-    if(hb.button_held())
+    if(hb.button_pressed())
     {
       if(!hb.light_change_remaining())
         if(brightness_direction<0)
@@ -61,12 +61,12 @@ void loop()
     }
     break;
   case MODE_ON:
-    if (hb.button_held()<200 && hb.button_released())
+    if (hb.button_pressed()<200 && hb.button_just_released())
     {
       hb.shutdown();
       mode = MODE_OFF;
     }
-    else if (hb.button_held()>200) 
+    else if (hb.button_pressed()>200) 
     {
       mode = MODE_FADE;
       // so we continue going the same way as before

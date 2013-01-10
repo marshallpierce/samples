@@ -43,7 +43,7 @@ void loop()
   switch (mode)
   {
   case MODE_OFF:
-    if(hb.button_held()>200){
+    if(hb.button_pressed() && hb.button_pressed_time()>200){
       // (re-)initialize variables
       loops = 0;
       curTap = 0;
@@ -56,7 +56,7 @@ void loop()
     }    
     break;
   case MODE_RECORD:
-    if (hb.button_held() && nTaps<BUFSIZE-1)
+    if (hb.button_pressed() && nTaps<BUFSIZE-1)
     {
       if(hb.tapped() && loops>5)
       {
@@ -66,7 +66,7 @@ void loop()
         hb.set_light(MAX_LEVEL, 200, 150);
       }
     }
-    else if (hb.button_held() && nTaps==BUFSIZE-1) 
+    else if (hb.button_pressed() && nTaps==BUFSIZE-1) 
     { 
       // We're out of buffer space so stop pulsing with taps.  
       //  Once the button has been released, continue.
@@ -87,11 +87,11 @@ void loop()
     }
     break;
   case MODE_PLAY:    
-    if (hb.button_released()) // make sure we don't switch modes until the button is released (or we're off)
+    if (hb.button_just_released()) // make sure we don't switch modes until the button is released (or we're off)
     {
       mode = MODE_OFF;
     } 
-    else if (hb.button_held()) 
+    else if (hb.button_pressed()) 
     {
       Serial.println("Off!");
       hb.shutdown();
