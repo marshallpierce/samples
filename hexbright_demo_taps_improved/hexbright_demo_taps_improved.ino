@@ -79,6 +79,7 @@ void loop()
         Serial.print(recording[i]);
         Serial.print(" ");
       }
+
       recording[nTaps] = loops;  // End time
       Serial.println(recording[nTaps]);
       loops = 0;
