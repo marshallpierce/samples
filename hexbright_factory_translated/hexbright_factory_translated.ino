@@ -104,19 +104,7 @@ void loop()
   {
     digitalWrite(DPIN_GLED, LOW);    
   }*/
-  switch(hb.get_charge_state())
-  {
-  case CHARGING:
-    if(hb.get_led_state(GLED)==LED_OFF)
-      hb.set_led(GLED, 200, 200);
-    break;
-  case CHARGED:
-    hb.set_led(GLED, 10);
-    break;
-  case BATTERY:
-    // led auto offs, don't need to turn it off...
-    break;
-  };
+  hb.print_charge(GLED);
   
   /*
   // Check the temperature sensor
