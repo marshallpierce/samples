@@ -25,6 +25,6 @@ void loop()
     hb.set_light(0, (random(4)<1)*1000, NOW);
   }
   else
-    hb.shutdown();
+    hb.set_light(0, OFF_LEVEL, NOW);
 }
 

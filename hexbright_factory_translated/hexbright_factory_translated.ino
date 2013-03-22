@@ -214,7 +214,7 @@ void loop()
       digitalWrite(DPIN_PWR, LOW);
       digitalWrite(DPIN_DRV_MODE, LOW);
       digitalWrite(DPIN_DRV_EN, LOW);
-*/    hb.shutdown();
+*/    hb.set_light(0, OFF_LEVEL, NOW);
       break;
     case MODE_LOW:
       Serial.println("Mode = low");

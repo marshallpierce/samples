@@ -20,8 +20,6 @@ void loop()
   if (hb.button_pressed())
     hb.set_light(MAX_LEVEL, MAX_LEVEL, NOW);
   else
-  // We could set_light(CURRENT_LEVEL, 0, NOW), but this will
-  // actually turn us off if we're not plugged in.
-    hb.shutdown();
+    hb.set_light(0, OFF_LEVEL, NOW);
 }
 

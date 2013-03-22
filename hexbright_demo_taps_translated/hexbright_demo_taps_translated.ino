@@ -94,7 +94,7 @@ void loop()
     else if (hb.button_pressed()) 
     {
       Serial.println("Off!");
-      hb.shutdown();
+      hb.set_light(0, OFF_LEVEL, NOW);
     }
     else
     { // No button, keep playing.

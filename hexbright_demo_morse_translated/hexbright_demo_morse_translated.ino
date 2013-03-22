@@ -79,7 +79,7 @@ void loop()
   
   if(mode == OFF_MODE)
   {
-    hb.shutdown(); 
+    hb.set_light(0, OFF_LEVEL, NOW);
   }
   if(mode == MORSE_MODE)
   {
