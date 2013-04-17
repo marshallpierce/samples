@@ -18,7 +18,7 @@ hexbright hb;
 #define MODE_ON                 2
 
 byte mode;
-char brightness_direction = 0;
+char brightness_direction = -1;
 
 void setup()
 {
