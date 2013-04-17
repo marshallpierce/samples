@@ -33,7 +33,7 @@ void loop()
   switch (mode)
   {
   case MODE_OFF:
-    if(hb.button_pressed()) {
+    if(hb.button_pressed_time()>200) {
       mode = MODE_FADE;
     }
     break;
