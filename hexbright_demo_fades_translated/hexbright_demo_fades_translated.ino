@@ -66,7 +66,7 @@ void loop()
       hb.set_light(CURRENT_LEVEL, OFF_LEVEL, 50);
       mode = MODE_OFF;
     }
-    else if (hb.button_pressed()>200) 
+    else if (hb.button_pressed() && hb.button_pressed_time()>200) 
     {
       mode = MODE_FADE;
       // so we continue going the same way as before
