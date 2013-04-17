@@ -23,7 +23,6 @@ char brightness_direction = -1;
 void setup()
 {
   hb.init_hardware();
-  
   mode = MODE_OFF;
 }
 
@@ -66,7 +65,7 @@ void loop()
       hb.set_light(0, OFF_LEVEL, NOW);
       mode = MODE_OFF;
     }
-    else if (hb.button_pressed() && hb.button_pressed_time()>200) 
+    else if (hb.button_pressed() && hb.button_pressed_time()>200)
     {
       mode = MODE_FADE;
       // so we continue going the same way as before
