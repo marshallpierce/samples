@@ -72,7 +72,7 @@ void loop()
       // so we continue going the same way as before
       brightness_direction = -brightness_direction;
     }
-    break;    
+    break;
   }
 }
 
