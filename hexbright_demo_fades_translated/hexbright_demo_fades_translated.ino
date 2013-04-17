@@ -63,7 +63,7 @@ void loop()
   case MODE_ON:
     if (!hb.button_pressed() && hb.button_just_released())
     {
-      hb.set_light(CURRENT_LEVEL, OFF_LEVEL, 50);
+      hb.set_light(0, OFF_LEVEL, NOW);
       mode = MODE_OFF;
     }
     else if (hb.button_pressed() && hb.button_pressed_time()>200) 
