@@ -6,7 +6,7 @@
 */
 
 #include <hexbright.h>
-#include <Wire.h>
+#include <twi.h>
 hexbright hb;
 
 void setup()

@@ -7,7 +7,7 @@
   until you turn it off by pressing the button again.
 */
 
-#include <Wire.h>
+#include <twi.h>
 #include <hexbright.h>
 
 hexbright hb;
