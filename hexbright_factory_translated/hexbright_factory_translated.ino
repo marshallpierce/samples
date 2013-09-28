@@ -23,17 +23,12 @@
 // pin settings taken care of inside the library
 
 
-// Conversion notes:
-// build size: 
-// 8920 bytes, no debugging, but accelerometer and number printing enabled 
-//  (#define PRINT_NUMBER and ACCELEROMETER at the top of hexbright.h)
-// 7000 bytes with those disabled
-// original was 5866, so the use of the library costs us approximately 1133 bytes,
-//  but we get some additional features that aren't used in this program.
-
 // In general, a code section is block commented out /* */, followed by a short 
 //  description and the alternative.
 
+#include <print_power.h>
+
+#define BUILD_HACK
 #include <hexbright.h>
 
 // Modes
@@ -105,7 +100,7 @@ void loop()
   {
     digitalWrite(DPIN_GLED, LOW);    
   }*/
-  hb.print_charge(GLED);
+  print_charge(GLED);
   
   /*
   // Check the temperature sensor

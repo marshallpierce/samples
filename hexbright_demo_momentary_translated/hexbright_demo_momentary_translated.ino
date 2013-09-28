@@ -5,8 +5,8 @@
   Light turns on when the button is down.  That's it.
 */
 
+#define BUILD_HACK
 #include <hexbright.h>
-#include <twi.h>
 hexbright hb;
 
 void setup()

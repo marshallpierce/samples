@@ -5,8 +5,8 @@
   Dazzler flashes while the button is down.
 */
 
+#define BUILD_HACK
 #include <hexbright.h>
-#include <twi.h>
 
 hexbright hb;
 

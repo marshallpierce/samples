@@ -7,8 +7,10 @@
   just below.
 */
 
+#include <print_number.h>
+
+#define BUILD_HACK
 #include <hexbright.h>
-#include <twi.h>
 
 hexbright hb;
 
@@ -97,7 +99,7 @@ void loop()
         
         // Flash three times the easy way (but a different color).
         //  Printing 30 would flash green 3 times, with a long red.
-        hb.print_number(3);
+        print_number(3);
         // return now to skip the following code.
         return;
       }

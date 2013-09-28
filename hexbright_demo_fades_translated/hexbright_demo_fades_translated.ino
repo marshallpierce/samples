@@ -7,8 +7,8 @@
   3. Press button.  Light turns off.
 */
 
+#define BUILD_HACK
 #include <hexbright.h>
-#include <twi.h>
 
 hexbright hb;
 

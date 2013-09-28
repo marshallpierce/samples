@@ -7,7 +7,7 @@
   until you turn it off by pressing the button again.
 */
 
-#include <twi.h>
+#define BUILD_HACK
 #include <hexbright.h>
 
 hexbright hb;
