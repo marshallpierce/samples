@@ -7,6 +7,7 @@
   3. Press button.  Light turns off.
 */
 
+// These next two lines must come after all other library #includes
 #define BUILD_HACK
 #include <hexbright.h>
 

@@ -7,6 +7,7 @@
   until you turn it off by pressing the button again.
 */
 
+// These next two lines must come after all other library #includes
 #define BUILD_HACK
 #include <hexbright.h>
 

@@ -5,6 +5,7 @@
   Dazzler flashes while the button is down.
 */
 
+// These next two lines must come after all other library #includes
 #define BUILD_HACK
 #include <hexbright.h>
 

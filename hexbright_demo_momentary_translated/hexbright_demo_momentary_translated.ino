@@ -5,6 +5,7 @@
   Light turns on when the button is down.  That's it.
 */
 
+// These next two lines must come after all other library #includes
 #define BUILD_HACK
 #include <hexbright.h>
 hexbright hb;
