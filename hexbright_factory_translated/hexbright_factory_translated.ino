@@ -6,7 +6,7 @@
 */
 
 #include <math.h>
-#include <Wire.h>
+#include <twi.h>
 
 /*
 // Settings
@@ -23,17 +23,13 @@
 // pin settings taken care of inside the library
 
 
-// Conversion notes:
-// build size: 
-// 8920 bytes, no debugging, but accelerometer and number printing enabled 
-//  (#define PRINT_NUMBER and ACCELEROMETER at the top of hexbright.h)
-// 7000 bytes with those disabled
-// original was 5866, so the use of the library costs us approximately 1133 bytes,
-//  but we get some additional features that aren't used in this program.
-
 // In general, a code section is block commented out /* */, followed by a short 
 //  description and the alternative.
 
+#include <print_power.h>
+
+// These next two lines must come after all other library #includes
+#define BUILD_HACK
 #include <hexbright.h>
 
 // Modes
@@ -45,9 +41,10 @@
 #define MODE_BLINKING_PREVIEW   5
 
 // State
-byte mode = 0;
-unsigned long btnTime = 0;
-boolean btnDown = false;
+byte mode;
+/*unsigned long btnTime = 0;
+boolean btnDown = false;*/
+// No longer used
 
 hexbright hb;
 
@@ -104,7 +101,7 @@ void loop()
   {
     digitalWrite(DPIN_GLED, LOW);    
   }*/
-  hb.print_charge(GLED);
+  print_charge(GLED);
   
   /*
   // Check the temperature sensor
@@ -146,7 +143,7 @@ void loop()
   }
 */
   // once every 40 times we come through here, have the light pulse for 50 ms
-  if(mode == MODE_BLINKING || mode == MODE_BLINKING_PREVIEW) 
+  if(mode == MODE_BLINKING || mode == MODE_BLINKING_PREVIEW)
   {
     static int i = 0;
     i = (i+1)%40;
@@ -214,7 +211,7 @@ void loop()
       digitalWrite(DPIN_PWR, LOW);
       digitalWrite(DPIN_DRV_MODE, LOW);
       digitalWrite(DPIN_DRV_EN, LOW);
-*/    hb.shutdown();
+*/    hb.set_light(0, OFF_LEVEL, NOW);
       break;
     case MODE_LOW:
       Serial.println("Mode = low");
@@ -249,7 +246,6 @@ void loop()
 */    // already taken care of
       break;
     }
-
     mode = newMode;
   }
 

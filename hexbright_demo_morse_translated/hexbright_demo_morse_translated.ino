@@ -7,8 +7,11 @@
   just below.
 */
 
+#include <print_number.h>
+
+// These next two lines must come after all other library #includes
+#define BUILD_HACK
 #include <hexbright.h>
-#include <Wire.h>
 
 hexbright hb;
 
@@ -79,7 +82,7 @@ void loop()
   
   if(mode == OFF_MODE)
   {
-    hb.shutdown(); 
+    hb.set_light(0, OFF_LEVEL, NOW);
   }
   if(mode == MORSE_MODE)
   {
@@ -97,7 +100,7 @@ void loop()
         
         // Flash three times the easy way (but a different color).
         //  Printing 30 would flash green 3 times, with a long red.
-        hb.print_number(3);
+        print_number(3);
         // return now to skip the following code.
         return;
       }

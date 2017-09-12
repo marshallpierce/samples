@@ -5,8 +5,9 @@
   Light turns on when the button is down.  That's it.
 */
 
+// These next two lines must come after all other library #includes
+#define BUILD_HACK
 #include <hexbright.h>
-#include <Wire.h>
 hexbright hb;
 
 void setup()
@@ -20,8 +21,6 @@ void loop()
   if (hb.button_pressed())
     hb.set_light(MAX_LEVEL, MAX_LEVEL, NOW);
   else
-  // We could set_light(CURRENT_LEVEL, 0, NOW), but this will
-  // actually turn us off if we're not plugged in.
-    hb.shutdown();
+    hb.set_light(0, OFF_LEVEL, NOW);
 }
 

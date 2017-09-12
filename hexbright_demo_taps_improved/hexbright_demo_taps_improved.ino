@@ -7,7 +7,8 @@
   until you turn it off by pressing the button again.
 */
 
-#include <Wire.h>
+// These next two lines must come after all other library #includes
+#define BUILD_HACK
 #include <hexbright.h>
 
 hexbright hb;
@@ -95,7 +96,7 @@ void loop()
     else if (hb.button_pressed()) 
     {
       Serial.println("Off!");
-      hb.shutdown();
+      hb.set_light(0, OFF_LEVEL, NOW);
     }
     else
     { // No button, keep playing.
